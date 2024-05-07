@@ -68,11 +68,11 @@ class TrainSetLoader(Dataset):
 
     def __getitem__(self, idx):
 
-        img_id     = self._items[idx]                        
-        img_path   = self.images+'/'+img_id+self.suffix  
+        img_id     = self._items[idx]
+        img_path   = self.images+'/'+img_id+self.suffix
         label_path = self.masks +'/'+img_id+self.suffix
 
-        img = Image.open(img_path).convert('RGB')        
+        img = Image.open(img_path).convert('RGB')
         mask = Image.open(label_path)
 
         # synchronized transform
@@ -115,10 +115,10 @@ class TestSetLoader(Dataset):
 
     def __getitem__(self, idx):
         # print('idx:',idx)
-        img_id = self._items[idx]  
-        img_path   = self.images+'/'+img_id+self.suffix    
+        img_id = self._items[idx]
+        img_path   = self.images+'/'+img_id+self.suffix
         label_path = self.masks +'/'+img_id+self.suffix
-        img  = Image.open(img_path).convert('RGB')  
+        img  = Image.open(img_path).convert('RGB')
         mask = Image.open(label_path)
         # synchronized transform
         img, mask = self._testval_sync_transform(img, mask)
@@ -311,7 +311,8 @@ def total_visulization_generation(dataset_dir, mode, test_txt, suffix, target_im
     for i in range(len(ids)):
         source_image = target_image_path + '/' + ids[i] + suffix
         img = Image.open(source_image)
-        img = img.resize((256, 256), Image.ANTIALIAS)
+        # img = img.resize((256, 256), Image.ANTIALIAS)
+        img = img.resize((256, 256), Image.LANCZOS) # 在新版本pillow（10.0.0之后）Image.ANTIALIAS 被移除了，取而代之的是Image.LANCZOS or Image.Resampling.LANCZOS
         img.save(source_image)
     for m in range(len(ids)):
         plt.figure(figsize=(10, 6))
@@ -319,16 +320,19 @@ def total_visulization_generation(dataset_dir, mode, test_txt, suffix, target_im
         img = plt.imread(target_image_path + '/' + ids[m] + suffix)
         plt.imshow(img, cmap='gray')
         plt.xlabel("Raw Image", size=11)
+        plt.close()
 
         plt.subplot(1, 3, 2)
         img = plt.imread(target_image_path + '/' + ids[m] + '_GT' + suffix)
         plt.imshow(img, cmap='gray')
         plt.xlabel("Ground Truth", size=11)
+        plt.close()
 
         plt.subplot(1, 3, 3)
         img = plt.imread(target_image_path + '/' + ids[m] + '_Pred' + suffix)
         plt.imshow(img, cmap='gray')
         plt.xlabel("Predicts", size=11)
+        plt.close()
 
         plt.savefig(target_dir + '/' + ids[m].split('.')[0] + "_fuse" + suffix, facecolor='w', edgecolor='red')
 
@@ -336,11 +340,11 @@ def total_visulization_generation(dataset_dir, mode, test_txt, suffix, target_im
 
 def make_visulization_dir(target_image_path, target_dir):
     if os.path.exists(target_image_path):
-        shutil.rmtree(target_image_path) 
+        shutil.rmtree(target_image_path)
     os.mkdir(target_image_path)
 
     if os.path.exists(target_dir):
-        shutil.rmtree(target_dir)  
+        shutil.rmtree(target_dir)
     os.mkdir(target_dir)
 
 def save_Pred_GT(pred, labels, target_image_path, val_img_ids, num, suffix):
@@ -349,7 +353,7 @@ def save_Pred_GT(pred, labels, target_image_path, val_img_ids, num, suffix):
     predsss = np.uint8(predsss)
     labelsss = labels * 255
     labelsss = np.uint8(labelsss.cpu())
-    
+
     img = Image.fromarray(predsss.reshape(256, 256))
     img.save(target_image_path + '/' + '%s_Pred' % (val_img_ids[num]) + suffix)
     img = Image.fromarray(labelsss.reshape(256, 256))
@@ -369,16 +373,17 @@ def save_Pred_GT_visulize(pred, img_demo_dir, img_demo_index, suffix):
     img = plt.imread(img_demo_dir + '/' + img_demo_index + suffix)
     plt.imshow(img, cmap='gray')
     plt.xlabel("Raw Imamge", size=11)
+    plt.close()
 
     plt.subplot(1, 2, 2)
     img = plt.imread(img_demo_dir + '/' + '%s_Pred' % (img_demo_index) +suffix)
     plt.imshow(img, cmap='gray')
     plt.xlabel("Predicts", size=11)
-
+    plt.close()
 
     plt.savefig(img_demo_dir + '/' + img_demo_index + "_fuse" + suffix, facecolor='w', edgecolor='red')
     plt.show()
-
+    plt.close()
 
 
 def save_and_visulize_demo(pred, labels, target_image_path, val_img_ids, num, suffix):
