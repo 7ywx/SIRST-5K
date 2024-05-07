@@ -17,7 +17,7 @@ from model.model import  Res_block
 from model.model import  Net
 import os
 #os.environ['NCCL_DEBUG'] = 'INFO'
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 class Trainer(object):
     def __init__(self, args):
 
@@ -72,10 +72,6 @@ class Trainer(object):
                 save_Pred_GT(pred, labels,visulization_path, val_img_ids, num, args.suffix)
                 num += 1
             total_visulization_generation(dataset_dir, args.mode, test_txt, args.suffix, visulization_path, visulization_fuse_path)
-   
-
-
-
 
 
 def main(args):
@@ -84,8 +80,3 @@ def main(args):
 if __name__ == "__main__":
     args = parse_args()
     main(args)
-
-
-
-
-

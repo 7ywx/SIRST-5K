@@ -21,7 +21,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0" # gpu编号
 root = './runs/'
 class Trainer(object):
     def __init__(self, args):
@@ -152,8 +152,3 @@ def main(args):
 if __name__ == "__main__":
     args = parse_args()
     main(args)
-
-
-
-
-

@@ -18,7 +18,7 @@ from model.model import  Res_block
 from model.model import  Net
 import os
 #os.environ['NCCL_DEBUG'] = 'INFO'
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0" # gpu编号
 class Trainer(object):
     def __init__(self, args):
 
@@ -105,8 +105,3 @@ if __name__ == "__main__":
     end_time = time.time()
     inference_time = end_time - start_time
     print("模型预测推理时间： {:.2f} 秒".format(inference_time))
-
-
-
-
-
